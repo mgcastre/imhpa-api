@@ -4,46 +4,55 @@ M. G. Castrellon
 February 2026
 """
 
+import re
+import json
 import httpx
 import pandas as pd
-from .constants import AVAILABLE_SENSORS
+from bs4 import BeautifulSoup
 
 class ImhpaClient:
     def __init__(self, timeout=10.0):
         self.client = httpx.Client(timeout=timeout)
         self.base_url = "https://www.imhpa.gob.pa/es"
-        self.sensors = AVAILABLE_SENSORS
+        self.url_satellite = f"{self.base_url}/estaciones-satelitales"
     
-    def list_sensors(self, data_type: str):
-        """
-        Returns a list of available sensors per data type:
-        The user specifies either 'clima-historicos' or 'estaciones-satelitales'
-        """
-        return self.sensors.get(data_type)
+    def get_sensors(self) -> dict:
+        response = self.client.get(self.url_satellite)
 
-    def _get_stations(self, data_type: str, sensor: str):
-        """
-        Returns a list of available sstations for a given sensor
-        """
-        url = f"{self.base_url}/{data_type}"
-        params = {"ajax": "1", "sensor": sensor}
+        soup = BeautifulSoup(response.text, "lxml")
+        script_tag = soup.find('script', string=re.compile(r'var sensores_satelital'))
+
+        pattern = r'var sensores_satelital\s*=\s*(\{.*?\});'
+        match = re.search(pattern, script_tag.string, re.DOTALL)
+
+        if match:
+            json_data = json.loads(match.group(1))
         
-        response = self.client.get(url, params=params)
+        return json_data
+
+    def get_stations(self, sensor: str) -> pd.DataFrame:
+        """
+        Returns a dataframe with the stations available for a given sensor.
+        """
+        data_url = f"{self.url_satellite}-data2"
+        response = self.client.get(data_url, params=dict(sensor=sensor))
         data = response.json()
         
-        df = pd.DataFrame(data)
-        df = df.T.reset_index(drop=True)
+        df = pd.DataFrame(data.get('estaciones'))
+        df = df.T.reset_index().rename(columns={"index":"id"})
+
+        for col in df.columns:
+            df[col] = df[col].convert_dtypes()
         
-        return df
-    
-    def get_historical_met_stations(self, sensor: str):
-        df = self._get_stations(data_type='clima-historicos', sensor=sensor)
+        for col in ["latitud", "longitud"]:
+            df[col] = df[col].astype(float)
+        
+        for col in ["id", "numero_estacion"]:
+            df[col] = df[col].astype(int)
+
         return df
 
-    def get_historical_averages(self, sensor: str, station_id: str):
-        pass
-
-    def get_high_frequency_data(self, station_id, sensor):
+    def get_data(self, station_id: str, sensor: str) -> pd.DataFrame:
         url = f"{self.base_url}/estaciones-satelitales-data"
         params = {"estacion": station_id, "sensor": sensor, "ajax": "1"}
         
@@ -53,4 +62,13 @@ class ImhpaClient:
         df = pd.DataFrame(data_dict['datos'], columns=['timestamp', 'value'])
         df['date_time'] = pd.to_datetime(df['timestamp'], unit='ms')
         df = df.loc[:, ['date_time', 'value']]
+        
         return df
+
+    # def get_historical_met_stations(self, sensor: str):
+    #     df = self._get_stations(data_type='clima-historicos', sensor=sensor)
+    #     return df
+
+    # def get_historical_averages(self, sensor: str, station_id: str):
+    #     pass
+
