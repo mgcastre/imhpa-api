@@ -1,5 +1,5 @@
 """
-Example and sandbox for imhpa-api
+Script to download raw data from IMHPA server
 M. G. Castrellon | February 2026
 """
 
@@ -34,20 +34,22 @@ for sensor in all_sensors:
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     
-    file_name = f"{sensor}_{current_date}.parquet"
-    file_path = f"{output_path}/{file_name}"
-    # if os.path.exists(file_name):
-    #     print(f"File {file_name} already exists. Skipping sensor {sensor}.")
+    csv_output = f"{output_path}/{sensor.lower()}_stations.csv"
+    if not os.path.exists(csv_output):
+        stations_df.to_csv(csv_output, index=False)
         
     list_of_dfs = []
     for station_id in stations_df['id']:
         print(f"Processing station: {station_id}")
         data_df = client.get_data(sensor=sensor, station_id=station_id)
-        data_df.to_parquet(f"{output_path}/{sensor}_{station_id}.parquet")
         list_of_dfs.append(data_df)
     
     final_df = pd.concat(list_of_dfs, ignore_index=True)
+    
     current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     final_df["ingest_timestamp"] = current_timestamp
+    
+    file_name = f"{sensor}_{current_date}.parquet"
+    file_path = f"{output_path}/{file_name}"
     final_df.to_parquet(file_path)
 
