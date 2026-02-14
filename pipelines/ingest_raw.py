@@ -5,40 +5,49 @@ M. G. Castrellon | February 2026
 
 # Load libraries
 import os
-import src.imhpa as imhpa
+import imhpa
+import pandas as pd
+from datetime import datetime
 
 # Initialize the client
 client = imhpa.ImhpaClient()
 
-# Define a list of sensors to retrieve data for
-my_sensors = [
-    'HR_PROM',
-    'LLUVIA',
-    'NIVEL',
-    'P_BAROM',
-    'RAD_SOLAR',
-    'TEMP_PROM',
-]
+# Get current date
+current_date = datetime.now().strftime("%Y_%m_%d")
 
 # Define path to save the data
 local_dir_out = "D:/Dropbox/Panama_Data/IMHPA/raw"
 if not os.path.exists(local_dir_out):
     os.makedirs(local_dir_out)
 
+# Get list of sensors
+all_sensors = client.get_sensors()
+
 #  Loop through sensors and stations to retrieve and save data
-for sensor in my_sensors:
+for sensor in all_sensors:
     print(f"Processing sensor: {sensor}")
+
+    stations_df = client.get_stations(sensor=sensor)
+    print(f"Found {len(stations_df)} stations for sensor {sensor}")
 
     output_path = f"{local_dir_out}/{sensor}"
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     
-    stations_df = client.get_stations(sensor=sensor)
-    print(f"Found {len(stations_df)} stations for sensor {sensor}")
-    
+    file_name = f"{sensor}_{current_date}.parquet"
+    file_path = f"{output_path}/{file_name}"
+    # if os.path.exists(file_name):
+    #     print(f"File {file_name} already exists. Skipping sensor {sensor}.")
+        
     list_of_dfs = []
     for station_id in stations_df['id']:
         print(f"Processing station: {station_id}")
         data_df = client.get_data(sensor=sensor, station_id=station_id)
         data_df.to_parquet(f"{output_path}/{sensor}_{station_id}.parquet")
+        list_of_dfs.append(data_df)
+    
+    final_df = pd.concat(list_of_dfs, ignore_index=True)
+    current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    final_df["ingest_timestamp"] = current_timestamp
+    final_df.to_parquet(file_path)
 
