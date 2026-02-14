@@ -53,17 +53,22 @@ class ImhpaClient:
         return df
 
     def get_data(self, station_id: str, sensor: str) -> pd.DataFrame:
-        url = f"{self.base_url}/estaciones-satelitales-data"
+        data_url = f"{self.url_satellite}-data"
         params = {"estacion": station_id, "sensor": sensor, "ajax": "1"}
         
-        response = self.client.get(url, params=params)
+        response = self.client.get(data_url, params=params)
         data_dict = response.json()
         
         df = pd.DataFrame(data_dict['datos'], columns=['timestamp', 'value'])
         df['date_time'] = pd.to_datetime(df['timestamp'], unit='ms')
-        df = df.loc[:, ['date_time', 'value']]
-        
-        return df
+
+        df['station_id'] = station_id
+        df['sensor'] = data_dict['sensor']
+        df['unit'] = data_dict['unidad_medida']
+
+        col_order = ['sensor', 'station_id', 'date_time', 'value', 'unit']
+
+        return df.loc[:, col_order]
 
     # def get_historical_met_stations(self, sensor: str):
     #     df = self._get_stations(data_type='clima-historicos', sensor=sensor)
