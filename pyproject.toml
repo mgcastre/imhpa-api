@@ -3,7 +3,7 @@ name = "imhpa-api"
 version = "0.0.1"
 description = "API wrapper for IMHPA data"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = "==3.13.*"
 dependencies = [
     "beautifulsoup4>=4.14.3",
     "httpx>=0.28.1",
