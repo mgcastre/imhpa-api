@@ -60,14 +60,16 @@ class ImhpaClient:
         data_dict = response.json()
         
         df = pd.DataFrame(data_dict['datos'], columns=['timestamp', 'value'])
-        df['timestamp_utc'] = pd.to_datetime(df['timestamp'], unit='ms')
-        df.rename(columns={'timestamp': 'timestamp_raw'})
+        # df['timestamp_utc'] = pd.to_datetime(df['timestamp'], unit='ms')
+        df.rename(columns={'timestamp': 'timestamp_raw'}, inplace=True)
 
         df['station_id'] = station_id
         df['sensor'] = data_dict['sensor']
         df['unit'] = data_dict['unidad_medida']
 
-        return df
+        col_order = ['sensor', 'station_id', 'timestamp_raw', 'value', 'unit']
+
+        return df.loc[:, col_order]
 
     # def get_historical_met_stations(self, sensor: str):
     #     df = self._get_stations(data_type='clima-historicos', sensor=sensor)
