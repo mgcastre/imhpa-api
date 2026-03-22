@@ -11,10 +11,16 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 class ImhpaClient:
-    def __init__(self, timeout: float = 10.0):
-        self.client = httpx.Client(timeout=timeout)
+    def __init__(self, timeout: float = 10.0, headers: dict = None):
         self.base_url = "https://www.imhpa.gob.pa/es"
         self.url_satellite = f"{self.base_url}/estaciones-satelitales"
+        default_headers = {
+            "User-Agent": "mgcastre-imhpa-api/01 (Datos para proyecto de investigacion)"
+        }
+        self.client = httpx.Client(
+            timeout=timeout,
+            headers={**default_headers, **(headers or {})}
+        )
 
     def _fetch_sensors(self) -> dict:
         """Fetches raw sensor dict from the IMHPA website."""
