@@ -102,9 +102,9 @@ class ImhpaClient:
 
         return df
 
-    def _fetch_data(self, station_id: str, sensor: str) -> dict:
+    def fetch_response(self, station_id: str, sensor: str) -> httpx.Response:
         """
-        Fetch raw JSON data from the IMHPA API for a given station and sensor.
+        Execute the HTTP GET request for a given station and sensor.
 
         Parameters
         ----------
@@ -115,13 +115,12 @@ class ImhpaClient:
 
         Returns
         -------
-        dict
-            Raw JSON response from the API, including readings and metadata.
+        httpx.Response
+            The raw HTTP response object.
         """
         data_url = f"{self.url_satellite}-data"
         params = {"estacion": station_id, "sensor": sensor, "ajax": "1"}
-        response = self.client.get(data_url, params=params)
-        return response.json()
+        return self.client.get(data_url, params=params)
 
     def get_data(self, station_id: str, sensor: str) -> pd.DataFrame:
         """
@@ -142,7 +141,7 @@ class ImhpaClient:
         pd.DataFrame
             Columns: sensor, station_id, date_time, value, unit.
         """
-        raw_data = self._fetch_data(station_id, sensor)
+        raw_data = self.fetch_response(station_id, sensor).json()
 
         df = pd.DataFrame(raw_data['datos'], columns=['timestamp', 'value'])
         df['date_time'] = pd.to_datetime(df['timestamp'], unit='ms')
