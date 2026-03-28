@@ -46,7 +46,7 @@ class ImhpaClient:
         Parameters
         ----------
         code : bool
-            If True, returns code names of the sensors.
+            If True, returns the sensor code.
         """
         raw = self._fetch_sensors()
         return list(raw.keys()) if code else list(raw.values())
@@ -73,8 +73,8 @@ class ImhpaClient:
         ----------
         sensor : str
             Sensor code as given by the list_sensors method.
-        labels : bool
-            If False, returns a list of station ids.
+        ids : bool
+            If True, returns a list of station ids.
         """
         raw = self._fetch_stations(sensor)
         stations = raw.get('estaciones')
