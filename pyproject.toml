@@ -10,5 +10,6 @@ dependencies = [
     "jupyter>=1.1.1",
     "lxml>=6.0.2",
     "pandas>=3.0.0",
+    "pandas-stubs~=3.0.0",
     "pyarrow>=23.0.0",
 ]
