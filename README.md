@@ -2,36 +2,38 @@
 
 A lightweight, independnetly developed, Python client for accessing and downloading data from the Meteorological and Hydrological Institute of Panama ([IMHPA's](https://www.imhpa.gob.pa/)).
 
+## Motivation
+
+Hydrological and water resource research requires quick, automated access to real-time hydrometeorological data for modeling and forecasting. This tool enables programmatic data workflows essential for research and proof-of-concept studies.
+
 ## Data Source
 
-This tool accesses real time hydr [IMHPA's](https://www.imhpa.gob.pa/) public gauge network, which operates hundreds of automated meteorological stations across Panama.
+This tool accesses real-time data from [IMHPA's public gauge network](https://www.imhpa.gob.pa/es/estaciones-satelitales), which operates hundreds of automated hydrologicla and meteorological stations across Panama.
 
 **What you get:**
-- **Sensors:** Rainfall, air temperature, relative humidity, wind speed/direction, stream gauge level, among others. 
-- **Geographic coverage:** Nationwide network spanning coastal, inland, and mountainous regions
-- **Temporal resolution:** Typically 15-minute or hourly observations, with daily summaries
-- **Historical depth:** Multi-year records (depth varies by station)
+- **Sensors:** Rainfall, air temperature, relative humidity, wind speed/direction, stream gauge and reservoir level, among others. 
+- **Temporal resolution:** Measurements are reported typically in 15-minute intervals.
+- **Historical depth:** Up to one month of historical records, depending on station and sensor.
 
-**Quality note:** Data comes directly from IMHPA's public data feeds. While IMHPA operates quality control procedures on their gauge network, you should be aware that raw observations may include errors, gaps, or artifacts. For critical hydrological applications, cross-reference with IMHPA's official bulletins or contact them directly.
+**Quality note:** Data comes directly from IMHPA's public data feeds. While IMHPA operates quality control procedures on their gauge network, you should be aware that raw observations may include errors, gaps, or artifacts. For critical hydrological applications, cross-reference with IMHPA's official bulletins or contact them [directly](https://www.imhpa.gob.pa/es/contactenos).
 
 ## About This Tool
 
 **`imhpa-api` is a Python client developed for scientific research purposes. It is an independently developed project and is not an official IMHPA product. It is not affiliated with or endorsed by IMHPA.**
 
-- This tool calls IMHPA's public web endpoints—the same data endpoints accessible via [their public website](https://www.imhpa.gob.pa/es/estaciones-satelitales)
-- It is maintained independently as a research tool
-- Development and support are independent of the institution
+This tool calls IMHPA's public data endpoints with no authentication required. It fetches data from the endpoints that power their [interactive website](https://www.imhpa.gob.pa/es/estaciones-satelitales). The same data is already publicly accessible there; this client simply automates programmatic access to it.
 
-**If you need:**
-- Official data queries or historical datasets → Contact [IMHPA directly](https://www.imhpa.gob.pa/)
-- Data licensing or institutional partnerships → Contact IMHPA
-- Bug reports or feature requests for this *client* → Use this project's issue tracker
+**If you need:** Official data queries, historical datasets or data licensing -> Contact [IMHPA directly](https://www.imhpa.gob.pa/es/contactenos).
 
-## Common Patterns
+### Installation Guide
 
-For detailed usage examples—filtering by date range, handling missing data, batch queries across multiple stations, and exporting to standard formats—see the `examples/` directory.
+[Comming Soon].
 
-## API Reference
+### Common Patterns
+
+For detailed usage examples see the `notebooks/` directory (comming soon).
+
+### API Reference
 
 For detailed documentation of each method, including parameters, return types, and exceptions, consult the docstrings in your Python environment:
 
@@ -45,7 +47,11 @@ help(client.get_stations)
 help(client.get_data)
 ```
 
-Or view them directly in the source code under `imhpa/`.
+Or view them directly in the source code under `src/imhpa/`.
+
+## Contributing
+
+Contributions, bug reports, and feature requests are welcome. Please open an issue or pull request on GitHub.
 
 ## Legal & Attribution
 
@@ -56,30 +62,6 @@ When publishing research that uses data retrieved via this tool, please:
 2. Clearly note that data was accessed through an independent client (`imhpa-api`)
 3. If possible, cite this repository and mention the access date
 
-## Contributing
-
-Contributions, bug reports, and feature requests are welcome. Please open an issue or pull request on GitHub.
-
 ## License
 
-MIT License
-
-Copyright (c) 2024
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
