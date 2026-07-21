@@ -1,6 +1,6 @@
 # IMHPA API
 
-A lightweight, independnetly developed, Python client for accessing and downloading data from the Meteorological and Hydrological Institute of Panama ([IMHPA's](https://www.imhpa.gob.pa/)).
+A lightweight, independnetly developed, Python client for accessing and downloading data from the Meteorological and Hydrological Institute of Panama ([IMHPA](https://www.imhpa.gob.pa/)).
 
 ## Motivation
 
@@ -23,7 +23,7 @@ This tool accesses real-time data from [IMHPA's public gauge network](https://ww
 
 This tool calls IMHPA's public data endpoints with no authentication required. It fetches data from the endpoints that power their [interactive website](https://www.imhpa.gob.pa/es/estaciones-satelitales). The same data is already publicly accessible there; this client simply automates programmatic access to it.
 
-**If you need:** Official data queries, historical datasets or data licensing -> Contact [IMHPA directly](https://www.imhpa.gob.pa/es/contactenos).
+**If you need:** Official data queries, historical datasets or data licensing -> Contact IMHPA [directly](https://www.imhpa.gob.pa/es/contactenos).
 
 ### Installation Guide
 
