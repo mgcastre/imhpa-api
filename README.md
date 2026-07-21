@@ -27,7 +27,15 @@ This tool calls IMHPA's public data endpoints with no authentication required. I
 
 ### Installation Guide
 
-[Comming Soon].
+**Latest development version:**
+```bash
+pip install git+https://github.com/mgcastre/imhpa-api.git
+```
+
+**Specific release (e.g., alpha version):**
+```bash
+pip install git+https://github.com/mgcastre/imhpa-api.git@v0.1.0a1
+```
 
 ### Common Patterns
 
